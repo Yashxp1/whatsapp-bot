@@ -1,27 +1,42 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import messageRouter from './routes/message.route';
-import { connectDB } from './config/db';
-import { whatsapp } from './lib/wweb';
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import { createServer } from "http";
+import { Server } from "socket.io";
+import messageRouter from "./routes/message.route";
+import { initWhatsapp } from "./lib/wweb";
+import { connectDB } from "./config/db";
 
 dotenv.config();
 
 const app = express();
-
 const PORT = process.env.PORT || 5001;
 
+// middleware
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/messages', messageRouter);
+// routes
+app.use("/api/messages", messageRouter);
 
-app.listen(PORT, () => {
+// create HTTP server and socket.io
+const httpServer = createServer(app);
+
+const io = new Server(httpServer, {
+  cors: {
+    origin: "*", // allow frontend
+  },
+});
+
+// initialize whatsapp with socket.io
+initWhatsapp(io);
+
+// connect DB and start server
+httpServer.listen(PORT, async () => {
   try {
-    whatsapp
-    connectDB();
+    await connectDB();
     console.log(`SERVER STARTED ON PORT: ${PORT}`);
   } catch (error: any) {
-    console.error('DB CONNECTION FAILED', error);
+    console.error("DB CONNECTION FAILED", error);
   }
 });
