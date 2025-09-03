@@ -14,7 +14,6 @@ import {
   QrCode as QrCodeIcon,
   RefreshCw,
   Loader2,
-  ArrowLeft,
   Wifi,
 } from 'lucide-react';
 
@@ -85,7 +84,7 @@ const QrCode = () => {
       setProgress(100);
 
       setTimeout(() => {
-        navigate('/chats');
+        navigate('/home');
       }, 2000);
     });
 
@@ -183,7 +182,7 @@ const QrCode = () => {
                       Connection Successful!
                     </p>
                     <p className="text-sm text-green-600 dark:text-green-400">
-                      Redirecting to chats...
+                      Redirecting to Dashboard...
                     </p>
                   </div>
                 </div>
@@ -206,22 +205,22 @@ const QrCode = () => {
             )}
 
             <div className="flex gap-3 pt-2">
-              <Button
+              {/* <Button
                 variant="outline"
                 onClick={() => navigate('/')}
                 className="flex-1"
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Home
-              </Button>
+              </Button> */}
 
               {status !== 'ready' && (
                 <Button
                   variant="outline"
                   onClick={handleRefresh}
-                  className="px-6"
+                  className="flex-1"
                 >
-                  <RefreshCw className="h-4 w-4" />
+                  <RefreshCw className="h-4 w-4" /> Refresh
                 </Button>
               )}
             </div>
