@@ -1,9 +1,7 @@
 import type { Request, Response } from 'express';
 import Message from '../model/message';
 import Instruction from '../model/instruction';
-import { generateReply } from '../lib/generateReply';
 
-// Get all messages OR filter by chatId
 export const getMessages = async (req: Request, res: Response) => {
   try {
     const chats = await Message.aggregate([
@@ -50,26 +48,22 @@ export const addMessage = async (req: Request, res: Response) => {
   }
 };
 
-// Save custom instructions
 export const saveCustomInstructions = async (req: Request, res: Response) => {
   try {
     const { instructions } = req.body;
 
     if (!instructions || typeof instructions !== 'string') {
       return res.status(400).json({
-        error: 'Instructions are required and must be a string'
+        error: 'Instructions are required and must be a string',
       });
     }
 
-    // Delete existing instructions (if you want only one active instruction)
     await Instruction.deleteMany({});
-
-    // Save new instructions
     const instructionDoc = new Instruction({
       instructions: instructions.trim(),
       createdAt: new Date(),
     });
-    
+
     await instructionDoc.save();
 
     res.json({ message: 'Custom instructions saved successfully' });
@@ -79,14 +73,12 @@ export const saveCustomInstructions = async (req: Request, res: Response) => {
   }
 };
 
-// Get current custom instructions
 export const getCustomInstructions = async (req: Request, res: Response) => {
   try {
-    // Get the most recent instruction
     const instructionDoc = await Instruction.findOne().sort({ createdAt: -1 });
-    
+
     const instructions = instructionDoc ? instructionDoc.instructions : '';
-    
+
     res.json({ instructions });
   } catch (error) {
     console.error('Error getting custom instructions:', error);
@@ -94,26 +86,22 @@ export const getCustomInstructions = async (req: Request, res: Response) => {
   }
 };
 
-// Legacy function - keeping for backward compatibility
 export const setInstruction = async (req: Request, res: Response) => {
   try {
     const { systemInstruction } = req.body;
 
     if (!systemInstruction || typeof systemInstruction !== 'string') {
       return res.status(400).json({
-        error: 'systemInstruction is required and must be a string'
+        error: 'systemInstruction is required and must be a string',
       });
     }
 
-    // Delete existing instructions
     await Instruction.deleteMany({});
-
-    // Save new instructions
     const instructionDoc = new Instruction({
       instructions: systemInstruction.trim(),
       createdAt: new Date(),
     });
-    
+
     await instructionDoc.save();
 
     res.json({ message: 'Custom instructions saved successfully' });

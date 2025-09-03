@@ -15,7 +15,7 @@ export async function generateReply(
 
   let prompt = defaultPrompt;
 
-  // If no custom instruction provided, try to load from database
+  
   if (!customSystemInstruction) {
     try {
       const instructionDoc = await Instruction.findOne().sort({ createdAt: -1 });
