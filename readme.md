@@ -31,7 +31,8 @@ Built with **Vite, TypeScript, Express, MongoDB, Shadcn UI, React, Tailwind, Soc
 
 ### Chat History  
 
-<img width="1881" height="853" alt="image" src="https://github.com/user-attachments/assets/ca743eeb-92cb-4fbb-8774-0aeaec927ca1" />
+<img width="1884" height="860" alt="image" src="https://github.com/user-attachments/assets/cbc09584-0a47-4158-bd69-248d7e1d9e12" />
+
 
 
 ---
@@ -51,3 +52,4 @@ Built with **Vite, TypeScript, Express, MongoDB, Shadcn UI, React, Tailwind, Soc
 ```bash
 git clone https://github.com/your-username/whatsapp-bot.git
 cd whatsapp-bot
+
