@@ -61,7 +61,6 @@ const QrCode = () => {
   };
 
   useEffect(() => {
-    // Simulate progress for connecting state
     if (status === 'connecting') {
       const interval = setInterval(() => {
         setProgress((prev) => {
@@ -85,7 +84,6 @@ const QrCode = () => {
       setStatus('ready');
       setProgress(100);
 
-      // Navigate after a short delay to show success state
       setTimeout(() => {
         navigate('/chats');
       }, 2000);
@@ -110,7 +108,6 @@ const QrCode = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background p-6 flex items-center justify-center">
       <div className="w-full max-w-md space-y-6">
-        {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex justify-center">
             <div className="p-4 rounded-full bg-green-100 dark:bg-green-900/20">
@@ -125,7 +122,6 @@ const QrCode = () => {
           </div>
         </div>
 
-        {/* Main Card */}
         <Card className="border-2 shadow-xl">
           <CardHeader className="text-center pb-4">
             <div className="flex items-center justify-center gap-3 mb-2">
@@ -144,7 +140,6 @@ const QrCode = () => {
           </CardHeader>
 
           <CardContent className="space-y-6">
-            {/* Progress Bar */}
             {status !== 'ready' && (
               <div className="space-y-2">
                 <Progress value={progress} className="h-2" />
@@ -154,7 +149,6 @@ const QrCode = () => {
               </div>
             )}
 
-            {/* QR Code Display */}
             <div className="flex justify-center">
               {status === 'connecting' && (
                 <div className="w-[280px] h-[280px] flex flex-col items-center justify-center border-2 border-dashed border-muted rounded-2xl bg-muted/30 space-y-4">
@@ -196,7 +190,6 @@ const QrCode = () => {
               )}
             </div>
 
-            {/* Instructions */}
             {status === 'qr' && (
               <div className="bg-muted/50 rounded-xl p-4 space-y-3">
                 <div className="flex items-center gap-2">
@@ -212,7 +205,6 @@ const QrCode = () => {
               </div>
             )}
 
-            {/* Action Buttons */}
             <div className="flex gap-3 pt-2">
               <Button
                 variant="outline"
@@ -236,7 +228,6 @@ const QrCode = () => {
           </CardContent>
         </Card>
 
-        {/* Footer Note */}
         <div className="text-center">
           <p className="text-xs text-muted-foreground">
             Your messages are encrypted end-to-end and never stored on our

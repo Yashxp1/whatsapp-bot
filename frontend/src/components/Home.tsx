@@ -24,18 +24,18 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingInstructions, setIsLoadingInstructions] = useState(false);
 
-  // Load saved instructions from server on component mount
   useEffect(() => {
     const loadInstructions = async () => {
       setIsLoadingInstructions(true);
       try {
-        const response = await axios.get('http://localhost:5001/api/messages/instruction');
+        const response = await axios.get(
+          'http://localhost:5001/api/messages/instruction'
+        );
         if (response.data.instructions) {
           setCustomInstructions(response.data.instructions);
         }
       } catch (error) {
         console.error('Error loading instructions from server:', error);
-        // Fallback to localStorage if server fails
         const savedInstructions = localStorage.getItem('customInstructions');
         if (savedInstructions) {
           setCustomInstructions(savedInstructions);
@@ -58,17 +58,17 @@ const Home = () => {
     setIsLoading(true);
 
     try {
-      // Fixed: Send 'instructions' instead of 'systemInstruction'
       await axios.post('http://localhost:5001/api/messages/instruction', {
         instructions: customInstructions.trim(),
       });
 
-      // Save locally as backup
       localStorage.setItem('customInstructions', customInstructions.trim());
 
       toast.success('Custom instructions saved successfully!');
     } catch (error: any) {
-      const errorMessage = error.response?.data?.error || 'Failed to save instructions. Please try again.';
+      const errorMessage =
+        error.response?.data?.error ||
+        'Failed to save instructions. Please try again.';
       toast.error(errorMessage);
       console.error('Error saving instructions:', error);
     } finally {
@@ -79,7 +79,9 @@ const Home = () => {
   const handleLoadInstructions = async () => {
     setIsLoadingInstructions(true);
     try {
-      const response = await axios.get('http://localhost:5001/api/messages/instruction');
+      const response = await axios.get(
+        'http://localhost:5001/api/messages/instruction'
+      );
       if (response.data.instructions) {
         setCustomInstructions(response.data.instructions);
         toast.success('Instructions loaded from server');
@@ -87,7 +89,8 @@ const Home = () => {
         toast.info('No saved instructions found on server');
       }
     } catch (error: any) {
-      const errorMessage = error.response?.data?.error || 'Failed to load instructions';
+      const errorMessage =
+        error.response?.data?.error || 'Failed to load instructions';
       toast.error(errorMessage);
       console.error('Error loading instructions:', error);
     } finally {
@@ -98,7 +101,6 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted p-6">
       <div className="max-w-4xl mx-auto space-y-8">
-        {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex justify-center">
             <div className="p-4 rounded-full bg-primary/10">
@@ -115,9 +117,7 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Bot Information Card */}
           <Card className="border-2 border-primary/20 bg-gradient-to-br from-card to-card/50">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2">
@@ -175,7 +175,6 @@ const Home = () => {
             </CardContent>
           </Card>
 
-          {/* Quick Actions Card */}
           <Card className="border-2 border-muted">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2">
@@ -207,9 +206,9 @@ const Home = () => {
                   <Settings className="mr-2 h-4 w-4" />
                   Settings
                 </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   className="h-10"
                   onClick={handleLoadInstructions}
                   disabled={isLoadingInstructions}
@@ -226,7 +225,6 @@ const Home = () => {
           </Card>
         </div>
 
-        {/* Custom Instructions Card */}
         <Card className="border-2 border-primary/30 shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-xl">
@@ -247,13 +245,17 @@ const Home = () => {
               </Label>
               <Textarea
                 id="instructions"
-                placeholder={isLoadingInstructions ? "Loading instructions..." : `Enter your custom instructions here... 
+                placeholder={
+                  isLoadingInstructions
+                    ? 'Loading instructions...'
+                    : `Enter your custom instructions here... 
 
 For example:
 - Always respond in a professional tone
 - Provide detailed explanations with examples
 - Ask clarifying questions when needed
-- Format code responses with proper syntax highlighting`}
+- Format code responses with proper syntax highlighting`
+                }
                 value={customInstructions}
                 onChange={(e) => setCustomInstructions(e.target.value)}
                 className="min-h-[150px] resize-none text-sm"
@@ -271,7 +273,11 @@ For example:
             <div className="flex gap-3 pt-2">
               <Button
                 onClick={handleSaveInstructions}
-                disabled={isLoading || !customInstructions.trim() || isLoadingInstructions}
+                disabled={
+                  isLoading ||
+                  !customInstructions.trim() ||
+                  isLoadingInstructions
+                }
                 className="flex-1 h-11"
               >
                 {isLoading ? (
@@ -312,7 +318,6 @@ For example:
           </CardContent>
         </Card>
 
-        {/* Stats or Additional Info */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card className="text-center">
             <CardContent className="pt-6">
