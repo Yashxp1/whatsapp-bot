@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import Message from '../model/message';
 import Instruction from '../model/instruction';
 
-export const getMessages = async (req: Request, res: Response) => {
+export const getMessages = async (res: Response) => {
   try {
     const chats = await Message.aggregate([
       { $sort: { timestamp: -1 } },
