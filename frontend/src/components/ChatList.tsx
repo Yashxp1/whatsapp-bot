@@ -1,6 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { MessageCircle, Clock } from "lucide-react";
 
 type Message = {
   _id: string;
@@ -12,21 +17,24 @@ type Message = {
 };
 
 type Chat = {
-  _id: string; // chatId
+  _id: string; 
   messages: Message[];
 };
 
 const ChatList = () => {
   const [chats, setChats] = useState<Chat[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchMessages = async () => {
       try {
+        setError(null);
         const res = await axios.get<Chat[]>("http://localhost:5001/api/messages");
-        setChats(res.data);
+        setChats(res.data || []);
       } catch (error) {
         console.error("Error fetching messages:", error);
+        setError("Failed to load chats. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -35,35 +43,142 @@ const ChatList = () => {
     fetchMessages();
   }, []);
 
-  if (loading) return <p className="text-center mt-6">Loading chats...</p>;
+  const formatTimestamp = (timestamp: string) => {
+    try {
+      return new Date(timestamp).toLocaleString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        day: "2-digit",
+        month: "short",
+      });
+    } catch {
+      return "Invalid date";
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto p-6 space-y-6">
+        <div className="flex items-center gap-2 mb-6">
+          <MessageCircle className="h-6 w-6" />
+          <h1 className="text-3xl font-bold">Chats</h1>
+        </div>
+        <div className="space-y-4">
+          {[...Array(3)].map((_, i) => (
+            <Card key={i}>
+              <CardHeader>
+                <Skeleton className="h-6 w-48" />
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <Skeleton className="h-16 w-full" />
+                  <Skeleton className="h-16 w-3/4 ml-auto" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="flex items-center gap-2 mb-6">
+          <MessageCircle className="h-6 w-6" />
+          <h1 className="text-3xl font-bold">Chats</h1>
+        </div>
+        <Card className="border-destructive">
+          <CardContent className="pt-6">
+            <p className="text-destructive text-center">{error}</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (chats.length === 0) {
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="flex items-center gap-2 mb-6">
+          <MessageCircle className="h-6 w-6" />
+          <h1 className="text-3xl font-bold">Chats</h1>
+        </div>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center text-muted-foreground">
+              <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p>No chats found</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-3xl mx-auto p-4 bg-gray-50 min-h-screen">
-      <h2 className="text-2xl font-bold mb-4">Chats</h2>
+    <div className="max-w-4xl mx-auto p-6 min-h-screen">
+      <div className="flex items-center gap-2 mb-6">
+        <MessageCircle className="h-6 w-6" />
+        <h1 className="text-3xl font-bold">Chats</h1>
+        <Badge variant="secondary" className="ml-auto">
+          {chats.length} chat{chats.length !== 1 ? "s" : ""}
+        </Badge>
+      </div>
 
-      <div className="flex flex-col gap-6">
+      <div className="space-y-6">
         {chats.map((chat) => (
-          <div key={chat._id} className="bg-white p-4 rounded-lg shadow-md">
-            <h3 className="font-semibold mb-2">Chat: {chat._id}</h3>
-
-            <div className="flex flex-col gap-2">
-              {chat.messages.map((msg) => (
-                <div
-                  key={msg._id}
-                  className={`p-3 rounded-xl max-w-[70%] ${
-                    msg.direction === "inbound"
-                      ? "bg-gray-200 self-start"
-                      : "bg-green-500 text-white self-end"
-                  }`}
-                >
-                  <p className="text-sm">{msg.content}</p>
-                  <span className="text-[10px] opacity-70">
-                    {new Date(msg.timestamp).toLocaleTimeString()}
-                  </span>
+          <Card key={chat._id} className="overflow-hidden">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <MessageCircle className="h-4 w-4" />
+                Chat: {chat._id}
+                <Badge variant="outline" className="ml-auto">
+                  {chat.messages?.length || 0} messages
+                </Badge>
+              </CardTitle>
+            </CardHeader>
+            
+            <CardContent>
+              <ScrollArea className="h-64 w-full pr-4">
+                <div className="space-y-3">
+                  {chat.messages?.length > 0 ? (
+                    chat.messages.map((msg) => (
+                      <div
+                        key={msg._id}
+                        className={`flex ${
+                          msg.direction === "inbound" ? "justify-start" : "justify-end"
+                        }`}
+                      >
+                        <div
+                          className={`max-w-[75%] rounded-lg p-3 shadow-sm ${
+                            msg.direction === "inbound"
+                              ? "bg-muted text-muted-foreground"
+                              : "bg-primary text-primary-foreground"
+                          }`}
+                        >
+                          <p className="text-sm leading-relaxed break-words">
+                            {msg.content}
+                          </p>
+                          <div className="flex items-center gap-1 mt-2 opacity-70">
+                            <Clock className="h-3 w-3" />
+                            <span className="text-xs">
+                              {formatTimestamp(msg.timestamp)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-muted-foreground text-sm text-center py-4">
+                      No messages in this chat
+                    </p>
+                  )}
                 </div>
-              ))}
-            </div>
-          </div>
+              </ScrollArea>
+            </CardContent>
+          </Card>
         ))}
       </div>
     </div>
