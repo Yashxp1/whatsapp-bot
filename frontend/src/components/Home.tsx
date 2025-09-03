@@ -29,7 +29,7 @@ const Home = () => {
       setIsLoadingInstructions(true);
       try {
         const response = await axios.get(
-          'http://localhost:5001/api/messages/instruction'
+          'http://import.meta.env.VITE_API_URL;/api/messages/instruction'
         );
         if (response.data.instructions) {
           setCustomInstructions(response.data.instructions);
@@ -58,7 +58,7 @@ const Home = () => {
     setIsLoading(true);
 
     try {
-      await axios.post('http://localhost:5001/api/messages/instruction', {
+      await axios.post('http://import.meta.env.VITE_API_URL;/api/messages/instruction', {
         instructions: customInstructions.trim(),
       });
 
@@ -80,7 +80,7 @@ const Home = () => {
     setIsLoadingInstructions(true);
     try {
       const response = await axios.get(
-        'http://localhost:5001/api/messages/instruction'
+        'http://import.meta.env.VITE_API_URL;/api/messages/instruction'
       );
       if (response.data.instructions) {
         setCustomInstructions(response.data.instructions);

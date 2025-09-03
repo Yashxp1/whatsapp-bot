@@ -30,7 +30,7 @@ const ChatList = () => {
     const fetchMessages = async () => {
       try {
         setError(null);
-        const res = await axios.get<Chat[]>("http://localhost:5001/api/messages");
+        const res = await axios.get<Chat[]>("http://import.meta.env.VITE_API_URL;/api/messages");
         setChats(res.data || []);
       } catch (error) {
         console.error("Error fetching messages:", error);

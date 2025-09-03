@@ -17,7 +17,7 @@ import {
   Wifi,
 } from 'lucide-react';
 
-const socket = io('http://localhost:5001');
+const socket = io('http://import.meta.env.VITE_API_URL;');
 
 const QrCode = () => {
   const [qr, setQr] = useState<string | null>(null);
